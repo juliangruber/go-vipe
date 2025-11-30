@@ -28,8 +28,19 @@ func main() {
 	io.Copy(f, os.Stdin)
 	f.Close()
 
-	// spawn editor
-	editor := exec.Command(os.Getenv("EDITOR"), f.Name())
+	// choose & launch editor
+	editor_prog := os.getenv("VIPE_EDITOR")
+	if editor_prog == nil {
+		editor_prog = os.getenv("VISUAL")
+	}
+	if editor_prog == nil {
+		editor_prog = os.Getenv("EDITOR")
+	}
+	if editor_prog == nil {
+		editor_prog = "editor"
+	}
+	
+	editor := exec.Command(editor_prog, f.Name())
 	tty, err := os.Open("/dev/tty")
 	check(err)
 
